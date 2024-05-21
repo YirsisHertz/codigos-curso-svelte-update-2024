@@ -1,10 +1,20 @@
 <script lang="ts">
+  import type { TabTypeEntity } from "../../domain/entities/TabType.entity";
+
   import { CounterPresentationAdapter } from "../../adapters/presentation/CounterPresentation.adapter";
+
   import { CounterModel } from "../../datasources/models/Counter.model";
+  import { LatestCountsModel } from "../../datasources/models/LatestCounts.model";
+
   import { InitCountUseCase } from "../../usecases/InitCount.usecase";
+  import { ReadLatestCountsUseCase } from "../../usecases/ReadLatestCounts.usecase";
+  import { SaveLatestCountsUseCase } from "../../usecases/SaveLatestCounts.usecase";
   import { StopCountUseCase } from "../../usecases/StopCount.usecase";
 
+  import { useLastCountsStore } from "../stores/LastCounts.store";
+
   export let title: string;
+  export let mode: TabTypeEntity;
   export let initialValue: number;
 
   let counter: number =
@@ -16,14 +26,29 @@
   const initCounter = () => {
     if (intervalId) return;
 
+    if (counter === 0) throw new Error("Counter is stoped");
+
     intervalId = setInterval(() => {
       if (counter === 0) {
         stopCounter();
+
+        const latestCountsModel = new LatestCountsModel();
+
+        new SaveLatestCountsUseCase(latestCountsModel).execute({
+          mode,
+          createdAt: new Date(),
+          time: initialValue
+        });
+
+        useLastCountsStore.set(
+          new ReadLatestCountsUseCase(latestCountsModel).execute()
+        );
+
         return;
       }
 
       counter = new InitCountUseCase(counterModel).execute(counter);
-    }, 1000);
+    }, 10);
   };
 
   const stopCounter = () => {

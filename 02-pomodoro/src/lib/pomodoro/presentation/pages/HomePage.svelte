@@ -1,13 +1,12 @@
 <script lang="ts">
+  import type { TabTypeEntity } from "../../domain/entities/TabType.entity";
   import LongBreakCounter from "../components/LongBreakCounter.svelte";
   import ShortBreakCounter from "../components/ShortBreakCounter.svelte";
   import WorkCounter from "../components/WorkCounter.svelte";
 
-  type TabType = "work" | "long-break" | "short-break";
+  let counterTab: TabTypeEntity = "work";
 
-  let counterTab: TabType = "work";
-
-  const selectTab = (tab: TabType) => {
+  const selectTab = (tab: TabTypeEntity) => {
     counterTab = tab;
   };
 </script>

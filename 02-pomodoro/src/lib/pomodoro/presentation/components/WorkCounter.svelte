@@ -2,4 +2,4 @@
   import Counter from "./Counter.svelte";
 </script>
 
-<Counter title="Work Timer" initialValue={25} />
+<Counter mode="work" title="Work Timer" initialValue={3} />

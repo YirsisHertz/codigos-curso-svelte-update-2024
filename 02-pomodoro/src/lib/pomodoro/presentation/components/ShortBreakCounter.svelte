@@ -2,4 +2,4 @@
   import Counter from "./Counter.svelte";
 </script>
 
-<Counter title="Short Break Timer" initialValue={15} />
+<Counter mode="short-break" title="Short Break Timer" initialValue={5} />
